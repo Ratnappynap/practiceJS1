@@ -1,0 +1,15 @@
+body {
+     font-family: sans-serif;
+     margin: 20px; 
+    }
+.block { 
+    padding: 10px; 
+ }
+.output { 
+    background: #eee;
+     padding: 10px; 
+    margin-top: 10px;
+}
+.done { 
+     color: gray; 
+}

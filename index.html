@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="block">
+        <input type="number" id="bankAmount" placeholder="Сумма (например, 100 или -5)">
+        <button onclick="handlePut()">Положить</button>
+        <button onclick="handleTake()">Взять</button>
+        <div>Текущий баланс: <strong id="balanceValue">0</strong></div>
+        <div class="output" id="bankLogs">Системные уведомления...</div>
+    </div>
+
+    <div class="block">
+        <div class="input-group">
+            <button onclick="runAnimalVoices()">Подать голос всем (speak)</button>
+            <button onclick="runDogFetch()">Приказать собаке (fetch)</button>
+        </div>
+        <div class="output" id="animalLogs">зоопарк</div>
+    </div>
+
+    <div class="block">
+        <div class="input-group">
+            <input type="text" id="taskTitle" placeholder="Название новой задачи">
+            <button onclick="handleAddTask()">Добавить</button>
+        </div>
+        <div id="todoContainer"></div>
+        <div style="margin-top: 10px;">
+            Выполнено задач: <strong id="doneCount">0</strong>
+        </div>
+    </div>
+
+    <script>
+        class PiggyBank {
+            #balance = 0;
+
+            put(amount) {
+                if (amount <= 0)
+                 return "Некорректная сумма";
+                this.#balance += amount;
+                return `Успешно внесено ${amount}`;
+            }
+
+            take(amount) {
+                if (amount <= 0) 
+                return "Некорректная сумма";
+                if (amount > this.#balance) 
+                return "Недостаточно средств";
+                this.#balance -= amount;
+                return `Успешно снято ${amount}`;
+            }
+
+            getBalance() {
+                return this.#balance;
+            }
+        }
+
+        class Animal {
+            constructor(name) { this.name = name; }
+            speak() { 
+                return `${this.name} издаёт звук`; 
+            }
+        }
+
+        class Cat extends Animal {
+            speak() { 
+                return `${this.name} говорит: Мяу`;
+             }
+        }
+
+        class Dog extends Animal {
+            speak() { 
+                return `${this.name} говорит: Гав`;
+             }
+            fetch() {
+                 return `${this.name} принёс щапку`;
+                 } 
+        }
+
+        class Task {
+            constructor(title) {
+                this.title = title;
+                this.done = false;
+            }
+            complete() { 
+                this.done = true;
+             }
+        }
+
+        class TodoList {
+            constructor() { 
+                this.tasks = [];
+             }
+            add(title) {
+                 this.tasks.push(new Task(title));
+                 }
+            complete(index) { 
+                if (this.tasks[index]) this.tasks[index].complete(); 
+            }
+            countDone() { 
+                return this.tasks.filter(t => t.done).length;
+             }
+        }
+
+        const myBank = new PiggyBank();
+        const myTodo = new TodoList();
+        const animals = [
+            new Animal("хзчето"),
+            new Cat("Черный"),
+            new Cat("Белый"),
+            new Dog("Собака")
+        ];
+
+        myTodo.add("Купить хлеб");
+        myTodo.add("Спать");
+        myTodo.add("Поспать еще");
+        myTodo.complete(0);
+        renderTodo();
+
+        function handlePut() {
+            const input = document.getElementById('bankAmount');
+            const amount = parseFloat(input.value);
+            if (isNaN(amount)) 
+            return;
+            const msg = myBank.put(amount);
+            document.getElementById('bankLogs').textContent = msg;
+            document.getElementById('balanceValue').textContent = myBank.getBalance();
+            input.value = '';
+        }
+
+        function handleTake() {
+            const input = document.getElementById('bankAmount');
+            const amount = parseFloat(input.value);
+            if (isNaN(amount)) 
+            return;
+            const msg = myBank.take(amount);
+            document.getElementById('bankLogs').textContent = msg;
+            document.getElementById('balanceValue').textContent = myBank.getBalance();
+            input.value = '';
+        }
+
+        function runAnimalVoices() {
+            const lines = [];
+            animals.forEach(animal => lines.push(animal.speak()));
+            document.getElementById('animalLogs').textContent = lines.join('\n');
+        }
+
+        function runDogFetch() {
+            const dog = animals.find(a => a instanceof Dog);
+            if (dog) {
+                document.getElementById('animalLogs').textContent = dog.fetch();
+            }
+        }
+
+        function handleAddTask() {
+            const input = document.getElementById('taskTitle');
+            if (input.value.trim() === "")
+             return;
+            myTodo.add(input.value);
+            input.value = '';
+            renderTodo();
+        }
+
+        function renderTodo() {
+            const container = document.getElementById('todoContainer');
+            container.innerHTML = '';
+
+            myTodo.tasks.forEach((task, index) => {
+                const div = document.createElement('div');
+                div.style.margin = "5px 0";
+
+                if (task.done) {
+                    div.innerHTML = `<span class="done">[x] ${task.title}</span>`;
+                } else {
+                    div.innerHTML = `<span>[ ] ${task.title}</span> `;
+                    const btn = document.createElement('button');
+                    btn.textContent = "Выполнить";
+                    btn.onclick = function() {
+                        myTodo.complete(index);
+                        renderTodo();
+                    }; 
+                    div.appendChild(btn);
+                }
+                container.appendChild(div);
+            });
+
+            document.getElementById('doneCount').textContent = myTodo.countDone();
+        }
+    </script>
+</body>
+</html>
