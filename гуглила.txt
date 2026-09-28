@@ -1,0 +1,16 @@
+введение в ооп
+https://doc.nette.org/ru/introduction-to-object-oriented-programming
+классы
+https://learn.rootpro.in/lesson/classes
+constructor следования и тд
+https://dnzl.ru/view_post.php?id=382
+фильтр
+https://doka.guide/js/array-filter/
+trim
+https://doka.guide/js/string-trim/
+поиск
+https://doka.guide/js/string-trim/
+наследственность 
+https://dev.to/hrishikesh1990/javascript-appendchild-what-it-is-and-when-to-use-it-5eea?comments_sort=top
+bool в js
+https://doka.guide/js/boolean/
